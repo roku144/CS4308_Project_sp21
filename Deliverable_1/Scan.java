@@ -120,6 +120,7 @@ public class Scan {
 			/*else {
 				Token.getToken(Lexemes[i],Lexeme_Type);
 			}*/
+			//Iclude output of Lexemes and their tokens to file with format Lexeme#Token
 		}
 			
 	}
