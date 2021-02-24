@@ -101,9 +101,13 @@ public class Scan {
 	//SearchLine takes a string from its parameter in order to split the string into its substrings that are separated by the " " character
 	public static void SearchLine(String Line,int Line_Number) {
 		String Lexeme_Type, Token;
+		
+		//Removal of additional spaces in the given line
 		if (Line.contains("  ")){
 				Line = Line.replaceAll("  ", " ");
 		}
+		
+		//Split line into individuals word separated by a SPACE 
 		String[] Lexemes = Line.split(" ");
 		//Loop for the removal of spaces within the individual words;
 		for (int i = 0; i <Lexemes.length; i++) {
@@ -115,7 +119,9 @@ public class Scan {
 				continue;
 			}
 			else {
+				//Call Token() to retrieve the correct token for the current Lexeme
 				Token = Token(Lexemes[i],Lexeme_Type);
+				//Output the Lexeme and its Token
 				System.out.printf("Lexeme %s has Token %s\n", Lexemes[i],Token);
 			}
 		}
@@ -229,7 +235,7 @@ public class Scan {
 		}
 	}
 	
-	//Putting space between symbols and the rest of the files to separate one lexeme from another
+	//Putting space between common symbols and the rest of the files to separate one lexeme from another
 	public static String SymbolBreak(String str) {
 		if (str.contains("(")) {
 			str = str.replace("(", " ( ");
@@ -252,17 +258,21 @@ public class Scan {
 		return str;
 	}
 	
-	//Providing the correct token to the given lexeme
+	//Return the correct token to the given lexeme
 	public static String Token(String Lexeme, String Lexeme_Type) {
 		String Token = "Unknown"; 
 		if (Lexeme_Type.equals("Number")) {
 			boolean isNumber = false;
 			try {
+				//test whether of not the current number Lexeme is a Integer --ture
 				if (Double.parseDouble(Lexeme)%1 == 0) {
+					//Set current Lexeme's Token to INT_LIT
 					Token = "INT_LIT";
 					isNumber = true;
 				}
+				//Found Double -- false
 				else {
+					//Set current Lexeme's Token to DOUB_LIT
 					Token = "DOUB_LIT";
 					isNumber = true;
 				}
@@ -277,32 +287,40 @@ public class Scan {
 		else if (Lexeme_Type.equals("AlphaNumeric")) {
 			for (int i = 0;i<KEYWORDS.length;i++) {
 				if (KEYWORDS[i].equals(Lexeme)) {
+					//Set current Lexeme's Token to the Token of the found keyword
 					Token = KEYWORDS[i].toUpperCase();
 					break;
 				}
 			}
 			if (Token.equals("Unknown")){
 				int i = 0;
+				//Check current AlphaNumeric against identifiers array
 				while(i < filled) {
 					if (identifiers[i].equals(Lexeme)) {
+						//Set current Lexeme's Token to IDENTIFIER
 						Token = "IDENTIFIER";
 						break;
 					}
 					i++;
 				}
 				if (Token.equals("Unknown")) {
+					//Adds current Lexeme to the list of identifiers
 					identifiers[i] = Lexeme;
 					Token = "IDENTIFIER";
 				}
 			}
 		}
+		
+		//Compares the current Lexeme with the defined symbols stored in the array SYMBOLS
 		else if (Lexeme_Type.equals("Symbol")) {
 			for (int i = 0;i < SYMBOLS.length; i++) {
 				if (SYMBOLS[i][0].equals(Lexeme)) {
+					//Sets the current Lexeme's Token to be the token of the symbol stored in SYMBOLS
 					Token = SYMBOLS[i][1];
 				}
 			}
 		}
+		//Return Token to called function
 		return Token;
 	}
 }
