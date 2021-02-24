@@ -5,7 +5,6 @@
  * 		Description:
  * 	
  *		Scan is the entry point of the scanner which will call all the subsequent parts of the scanner.
- *		From here the program will call the Token class which will provide the relevant token for the given lexeme.
  * 		
  * 		The functions of this Scan class are as follows:
  * 		-Main() - provides the reading of the given file into its individual lines
@@ -14,11 +13,18 @@
  * 					general category such as "Number", "Symbol", "AlphaNumeric", or "Unknown")
  * 		-Check() - will analyze the individual characters to ensure that are defined for the standard dictionary of English characters
  * 					(Digits {0-9}, Letters{a-z, A-Z}, and Keyboard symbols e.g. ',' , '.', etc.)
+ * 		-Token() - Assigns a token to the given lexeme
  */
 
 import java.util.Scanner;
+
 import java.io.*;
 public class Scan {
+	private static final String[] KEYWORDS = {"if","elseif", "then", "else","endif","function", "function", "begin", "endfun", "define", "set", "variables", "constants", "type", "integer", "double", "boolean", "character", "true", "false", "display", "input"};
+	private static final String[][] SYMBOLS = {{"(","LPARENTHS"}, {")", "RPARENTHS"}, {"<","LASNGB"},{">","RANGB"}, {"\"", "QUOTES"}, {"\'", "SINGQUOTE"}, {".", "DOT_OP"}, {",", "COMMA"},{"+", "ADD_OP"}, 
+					{"-","MINUS_OP"}, {"*","MULTI_OP"}, {"/","DIVIDE_OP"}, {"=", "EQS_OP"}, {"==","EQUIV_OP"},  {"<=","LESSEQ_OP"}, {">=","GREATEREQ_OP"}, {"<=","LESSEQ_OP"}, {"!","NOT_OP"}, {"!=","NOTEQ_OP"}};
+	private static String[] identifiers = new String[25]; //identifiers structure of [identifier_name][identifier_type]
+	private static int filled = 0;
 	public static void main (String[] args) {
 		String FileName = "";
 		Scanner UserInput = new Scanner(System.in);
@@ -47,20 +53,14 @@ public class Scan {
 						Line = Line.replace(Line.substring(Line.indexOf("//")),"").trim();
 						if(Line.equals("") ||Line.equals(" \n")) {
 							continue;
-						}
-						else {
-							//Searching of the individual words on the line read
-							SearchLine(Line.trim(), LineNumber);
-						}
-						
+						}						
 					}
 					
 					//Removing block comments 
 					else if (Line.contains("/*")) {
 						Line = Line.replace(Line.substring(Line.indexOf("/*"),((Line.indexOf("\n")+1)-(Line.indexOf("/*")-2))),"").trim();
 						if (!Line.equals("")) {
-							//Searching of the individual words on the line read
-							SearchLine(Line.trim(), LineNumber);
+							;
 						}
 						//Looping for the end of the multi-lined comment
 						CommentBlock:
@@ -79,14 +79,13 @@ public class Scan {
 								LineNumber++;
 								continue;
 							}
-							//Searching of the individual words on the line read
-							SearchLine(Line.trim(), LineNumber);
 						}
 					}
-					else {
-						//Searching of the individual words on the line read
-						SearchLine(Line.trim(), LineNumber);
-					}
+					
+					//Ensuring the symbols are scanned separate from the rest of the phrase
+					Line = SymbolBreak(Line).trim();
+					//Searching of the individual words on the line read
+					SearchLine(Line, LineNumber);
 				}
 				BR.close();
 				break;
@@ -101,26 +100,24 @@ public class Scan {
 	
 	//SearchLine takes a string from its parameter in order to split the string into its substrings that are separated by the " " character
 	public static void SearchLine(String Line,int Line_Number) {
-		String Lexeme_Type;
+		String Lexeme_Type, Token;
+		if (Line.contains("  ")){
+				Line = Line.replaceAll("  ", " ");
+		}
 		String[] Lexemes = Line.split(" ");
-		
 		//Loop for the removal of spaces within the individual words;
 		for (int i = 0; i <Lexemes.length; i++) {
-			if (Lexemes[i].contains(" ")){
-				Lexemes[i] = Lexemes[i].replaceAll(" ","");
-			}
+			Lexemes[i] = Lexemes[i].replaceAll(" ", "");
 			Lexeme_Type = Read(Lexemes[i]);
-			
 			//Providing error message to user with the line number and column number of the error
 			if (Lexeme_Type.equals("Unknown")) {
-				System.out.printf("Unknown character on row %d colum %d\n", Line_Number, Line.indexOf(Lexemes[i]));
+				System.out.printf("Unknown character on row %d column %d\n", Line_Number, Line.indexOf(Lexemes[i]));
 				continue;
 			}
-			//Call for Token Function.
-			/*else {
-				Token.getToken(Lexemes[i],Lexeme_Type);
-			}*/
-			//Iclude output of Lexemes and their tokens to file with format Lexeme#Token
+			else {
+				Token = Token(Lexemes[i],Lexeme_Type);
+				System.out.printf("Lexeme %s has Token %s\n", Lexemes[i],Token);
+			}
 		}
 			
 	}
@@ -230,6 +227,83 @@ public class Scan {
 		else {
 			return "Unknown";
 		}
+	}
+	
+	//Putting space between symbols and the rest of the files to separate one lexeme from another
+	public static String SymbolBreak(String str) {
+		if (str.contains("(")) {
+			str = str.replace("(", " ( ");
+		}
+		if (str.contains(")")) {
+			str = str.replace(")", " ) ");
+		}
+		if (str.contains("\"")) {
+			str = str.replace("\"", " \" ");
+		}
+		if (str.contains("\'")) {
+			str = str.replace("\'", " \' ");
+		}
+		if (str.contains(".")) {
+			str = str.replace(".", " . ");
+		}
+		if (str.contains(",")) {
+			str = str.replace(",", " , ");
+		}
+		return str;
+	}
+	
+	//Providing the correct token to the given lexeme
+	public static String Token(String Lexeme, String Lexeme_Type) {
+		String Token = "Unknown"; 
+		if (Lexeme_Type.equals("Number")) {
+			boolean isNumber = false;
+			try {
+				if (Double.parseDouble(Lexeme)%1 == 0) {
+					Token = "INT_LIT";
+					isNumber = true;
+				}
+				else {
+					Token = "DOUB_LIT";
+					isNumber = true;
+				}
+				
+			}finally{
+				if (!isNumber) {
+					Token = "Unknown";
+				}
+			}
+			
+		}
+		else if (Lexeme_Type.equals("AlphaNumeric")) {
+			for (int i = 0;i<KEYWORDS.length;i++) {
+				if (KEYWORDS[i].equals(Lexeme)) {
+					Token = KEYWORDS[i].toUpperCase();
+					break;
+				}
+			}
+			if (Token.equals("Unknown")){
+				int i = 0;
+				while(i < filled) {
+					if (identifiers[i].equals(Lexeme)) {
+						Token = "IDENTIFIER";
+						break;
+					}
+					i++;
+				}
+				if (Token.equals("Unknown")) {
+					identifiers[i] = Lexeme;
+					Token = "IDENTIFIER";
+				}
+			}
+		}
+		else if (Lexeme_Type.equals("Symbol")) {
+			for (int i = 0;i < SYMBOLS.length; i++) {
+				if (SYMBOLS[i][0].equals(Lexeme)) {
+					Token = SYMBOLS[i][1];
+				}
+			}
+		}
+		return Token;
 	}
 }
 
