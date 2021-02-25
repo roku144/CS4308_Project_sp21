@@ -277,7 +277,7 @@ public class Scan {
 		}
 		else if (Lexeme_Type.equals("AlphaNumeric")) {
 			for (int i = 0;i<KEYWORDS.length;i++) {
-				if (KEYWORDS[i].equals(Lexeme)) {
+				if (KEYWORDS[i][0].equals(Lexeme)) {
 					Token = KEYWORDS[i][1];
 					break;
 				}
