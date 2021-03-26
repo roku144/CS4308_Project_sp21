@@ -17,8 +17,8 @@
  */
 
 import java.util.Scanner;
-
 import java.io.*;
+
 public class Scan {
 	private static final String[][] KEYWORDS = {{"function", "21"}, {"begin", "22"}, {"endfun", "23"}, {"constants", "24"}, {"variables", "25"}, {"define", "26"}, {"set", "27"},  {"type", "28"}, {"display", "29"}, {"input", "30"}, 
 						{"integer", "31"}, {"double", "32"}, {"boolean", "33"}, {"character", "34"}, {"true", "35"}, {"false", "36"}, {"if", "37"}, {"then", "38"}, {"endif", "39"}, {"elseif", "40"}, {"else", "41"}};
@@ -28,6 +28,17 @@ public class Scan {
 	private static int filled = 0;
 	public static void main (String[] args) {
 		String FileName = "";
+		
+		//Clearing the Target file for the output of the scan.java file
+		try {
+			PrintWriter writer = new PrintWriter("temp.txt");
+			writer.print("");
+			writer.close();
+		}
+		catch (FileNotFoundException e1) {
+			System.out.println("Program attempted to clear \"tempt.txt\", but no such file exists.");
+		}
+		
 		Scanner UserInput = new Scanner(System.in);
 		
 		/*
@@ -40,6 +51,7 @@ public class Scan {
 			FileName = UserInput.nextLine();
 			int LineNumber = 0;
 			
+			//
 			try (BufferedReader BR = new BufferedReader(new FileReader(FileName))){
 				String Line;
 				while ((Line = BR.readLine())!= null) {
@@ -91,6 +103,8 @@ public class Scan {
 				BR.close();
 				break;
 			}
+			
+			//Error thrown when the given file does not exist
 			catch (IOException e) {
 				System.out.println("Incorrect or missing file name");
 				FileName = "";
@@ -101,26 +115,44 @@ public class Scan {
 	
 	//SearchLine takes a string from its parameter in order to split the string into its substrings that are separated by the " " character
 	public static void SearchLine(String Line,int Line_Number) {
-		String Lexeme_Type, Token;
-		if (Line.contains("  ")){
-				Line = Line.replaceAll("  ", " ");
-		}
-		String[] Lexemes = Line.split(" ");
-		//Loop for the removal of spaces within the individual words;
-		for (int i = 0; i <Lexemes.length; i++) {
-			Lexemes[i] = Lexemes[i].replaceAll(" ", "");
-			Lexeme_Type = Read(Lexemes[i]);
-			//Providing error message to user with the line number and column number of the error
-			if (Lexeme_Type.equals("Unknown")) {
-				System.out.printf("Unknown character on row %d column %d\n", Line_Number, Line.indexOf(Lexemes[i]));
-				continue;
+		File output = new File("temp.txt");
+		
+		//Attempting to open the temp.txt file, if no file found then create a new file
+		try {
+			if (!output.exists()) {
+				output.createNewFile();
 			}
-			else {
-				Token = Token(Lexemes[i],Lexeme_Type);
-				System.out.printf("Lexeme %s has Token %s\n", Lexemes[i],Token);
-			}
-		}
+			PrintWriter PW = new PrintWriter(new FileWriter(output, true));
 			
+			String Lexeme_Type, Token;
+			if (Line.contains("  ")){
+				Line = Line.replaceAll("  ", " ");
+			}
+			String[] Lexemes = Line.split(" ");
+			//Loop for the removal of spaces within the individual words;
+			for (int i = 0; i <Lexemes.length; i++) {
+				Lexemes[i] = Lexemes[i].replaceAll(" ", "");
+				Lexeme_Type = Read(Lexemes[i]);
+				//Providing error message to user with the line number and column number of the error
+				if (Lexeme_Type.equals("Unknown")) {
+					System.out.printf("Unknown character on row %d column %d\n", Line_Number, Line.indexOf(Lexemes[i]));
+					continue;
+				}
+				else {
+					Token = Token(Lexemes[i],Lexeme_Type);
+					String out = Token + " " + Lexemes[i] + "\n";
+					
+					//Appends the current out temp.txt file with the current Token and their lexeme
+					PW.append(out);
+				}
+			}
+		PW.close();
+		} 
+		
+		//Error thrown if there is an issue opening the output file
+		catch(IOException e) {
+			System.out.println("Error opening output file.");
+		}
 	}
 	
 	//Reading the words individually to properly decide the category the Lexeme belongs to
