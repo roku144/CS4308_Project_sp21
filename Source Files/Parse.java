@@ -24,7 +24,7 @@ public class Parse {
 	
 	
 	}//end main
-	public static void readFile() {
+	public static Object readFile() {
 		try {
 			BufferedReader BR = new BufferedReader(new FileReader(FileName));
 			String fileLine;
@@ -43,6 +43,7 @@ public class Parse {
 			System.out.print("An error happened during file reading");
 			error.printStackTrace();
 		}//end catch
+		return ll;
 	}//end readFile
 
 

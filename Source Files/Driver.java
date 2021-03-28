@@ -32,6 +32,13 @@ public class Driver {
 		UserInput.close();
 		
 		//Calling the Parser
-		Parse.readFile();
+		ParseLinkedList PLL = new ParseLinkedList(Parse.readFile());
+		PLL.beginParse();
+		
+		//Output the List created by the parser
+		System.out.println("Print Arraylist using for loop");
+	    	for(int i=0; i < PLL.parsedTree.size(); i++){
+	    		System.out.println(PLL.parsedTree.get(i));
+	    	}
 	}
 }
