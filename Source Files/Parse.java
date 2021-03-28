@@ -1,11 +1,7 @@
 /************************************************************
-*Parker Browne
-*CPL project
-*deliverible 2
-*
-*
-*
-*
+* 	Author: Parker Browne
+*	Group: Parker Browne, Gautam Dubhashi, Joel Smith
+* 	Class: CS4308 - Concepts of Programming Language(Sp 2021)
 *
 *************************************************************/
 
