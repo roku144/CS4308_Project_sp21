@@ -9,22 +9,21 @@
 *
 *************************************************************/
 
-import java.util.*;
 import java.io.*;
 
 
 public class Parse {
+	//linked list for the tokens and lexemes 
+	//not sure if declaring it as static will cause issues but it runs for now.
 	static LinkedList ll = new LinkedList();
-	static String FileName = "temp.txt";
-	public static void main(String args[]) {
-	
-	readFile();
 
-	ll.display();
+	//file temp.txt is used as an intermedate from the scanner to the parser
+	static String FileName = "temp.txt";
+
 	
-	
-	}//end main
-	public static Object readFile() {
+	//reads from temp.txt line by line, splits the tokens and lexemes into seprate varibles 
+	//then calls ParseCase, which takes those variables 
+	public static void readFile() {
 		try {
 			BufferedReader BR = new BufferedReader(new FileReader(FileName));
 			String fileLine;
@@ -37,19 +36,18 @@ public class Parse {
 				Lex = arrOfFile[1];
 				ParseCase(Tok, Lex);
 			}//end while
+
 			BR.close();
+
 		}//end try
 		catch (IOException error) {
 			System.out.print("An error happened during file reading");
 			error.printStackTrace();
 		}//end catch
-		return ll;
 	}//end readFile
 
-
-	
-	//21-function, 22-begin, 23-endfun, 24-constants, 25-variables, 26-define, 27-set, 29-display, 30-input, 37-if, 39-endif, 40-elseif, 41-else
-	
+	//this method checks to see if a particular Token needs to have space added behind it
+	//then adds that token and lexeme to the linked lists
 	public static void ParseCase(int Tokens, String Lexemes) {
 		
 		switch(Tokens) {
