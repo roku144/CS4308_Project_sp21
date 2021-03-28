@@ -23,7 +23,7 @@ public class Parse {
 	
 	//reads from temp.txt line by line, splits the tokens and lexemes into seprate varibles 
 	//then calls ParseCase, which takes those variables 
-	public static void readFile() {
+	public static Object readFile() {
 		try {
 			BufferedReader BR = new BufferedReader(new FileReader(FileName));
 			String fileLine;
@@ -44,6 +44,9 @@ public class Parse {
 			System.out.print("An error happened during file reading");
 			error.printStackTrace();
 		}//end catch
+		
+		//Return LinkedList object to file
+		return ll;
 	}//end readFile
 
 	//this method checks to see if a particular Token needs to have space added behind it
