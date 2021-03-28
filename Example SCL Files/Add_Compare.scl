@@ -1,0 +1,16 @@
+function
+variables 
+	define x type integer //DEFINE IDENTIFIER TYPE data_type
+	define y type integer
+	define z type integer
+begin //expr
+	set x = 10
+	set y = 25
+	set z = x + y 
+	if (z >= 30) then  //IF (expr) THEN expr endif | ... else expr
+		set z = z - 30
+	endif 
+	else  
+		set z = 30
+	endif
+endfun

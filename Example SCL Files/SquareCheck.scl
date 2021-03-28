@@ -1,0 +1,15 @@
+function
+constants
+	define x type integer = 25
+variables 
+	define y type integer //DEFINE IDENTIFIER TYPE data_type
+begin //expr
+	set y = 5
+	if (y < x) then  //IF (expr) THEN expr endif | ... else expr
+		set y = y * y
+	endif 
+	else  
+		set y = 2 * x
+	endif
+	display y
+endfun
