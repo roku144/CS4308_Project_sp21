@@ -35,10 +35,43 @@ public class Driver {
 		ParseLinkedList PLL = new ParseLinkedList(Parse.readFile());
 		PLL.beginParse();
 		
-		//Output the List created by the parser
-		System.out.println("Print Arraylist using for loop");
+		//Clearing the information currently stored in the statements.txt file
+		try {
+			PrintWriter writer = new PrintWriter("statements.txt");
+			writer.print("");
+			writer.close();
+		}
+		catch (FileNotFoundException e1) {
+			System.out.println("Program attempted to clear \"statements.txt\", but no such file exists.");
+		}
+		
+		//Creating output file object for the statemnts.txt file
+		File output = new File("statements.txt");
+	    try {
+			if (!output.exists()) {
+				output.createNewFile();
+			}
+			
+			//Creating the ability to write to the output file without 
+			//overwriting the content currently stored in the file
+			PrintWriter PW = new PrintWriter(new FileWriter(output, true));
+			
+			//Storage of the intermediate information until the full statement has been read
+			String str = "";
+			//Output the List created by the parser to the statements.txt file
 	    	for(int i=0; i < PLL.parsedTree.size(); i++){
-	    		System.out.println(PLL.parsedTree.get(i));
+	    		if (PLL.parsedTree.get(i).equals("9000")) {
+	    			str += "\n";
+	    			PW.append(str);
+	    			str = "";
+	    		}
+	    		else {
+	    			str += " " + PLL.parsedTree.get(i);
+	    		}
 	    	}
+	    	PW.close();
+	    }catch(IOException e){
+	    	System.out.println("Error opening output file.");
+	    }
 	}
 }
