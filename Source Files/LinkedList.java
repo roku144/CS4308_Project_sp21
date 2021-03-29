@@ -5,8 +5,11 @@
  * 
  * 	  Included functions:
  * 	  -getHeadNode() - Returns the node stored in the head class variable for the current object of the LinkedList class
- *    -add() - adds a node to the current linked list with data passed by the parameters num and str, which are an int and String respectively
- * 	  -
+ *    	  -add() - adds a node to the current linked list with data passed by the parameters num and str, which are an int and String respectively
+ * 	  -display() - prints the contents of the current linked list object to the console
+ *	  -getNodeInt() - returns the integer value stored in the currently accessed node
+ *        -getNodeStr() - returns the string value stored in the currently accessed node
+ *	  -getNextNode() - returns the nect Node variable stored in the currently accessed node
  */
 public class LinkedList {
 	
