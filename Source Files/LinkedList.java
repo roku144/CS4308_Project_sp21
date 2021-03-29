@@ -10,6 +10,7 @@
  *	  -getNodeInt() - returns the integer value stored in the currently accessed node
  *        -getNodeStr() - returns the string value stored in the currently accessed node
  *	  -getNextNode() - returns the nect Node variable stored in the currently accessed node
+ *	  -addList() - dynamically chnages the size of the LinkedList array for the given integer size
  */
 public class LinkedList {
 	
