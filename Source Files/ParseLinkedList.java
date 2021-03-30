@@ -142,16 +142,7 @@ public class ParseLinkedList {
 
     public void defineVari(LinkedList.Node node) {
 
-        /*prolly get rid of this
-        if(LinkedList.getNodeInt(node) == 9000) {
-            parsedTree.add(String.valueOf(LinkedList.getNodeInt(node)));
-            //begin the definitions,
-            node = LinkedList.NextNode(node);
-            //check if define is preceeded by a blank.
-          if (LinkedList.getNodeInt(node) == 26) {`     //Dont need to check for DEFINE anymore
-            //if word = define
-            parsedTree.add(String.valueOf(LinkedList.getNodeInt(node)));
-            node =LinkedList.NextNode(node); till here*/
+       
         if(LinkedList.getNodeInt(node) == 42 ){
             //||LinkedList.getNodeInt(node) == 43 ||LinkedList.getNodeInt(node) == 44) {
             //followig define, we have an identifier, depending on if it is a string(42),
@@ -169,23 +160,6 @@ public class ParseLinkedList {
 
         }else{errorMsg("No identifier");}
 
-
-        //}
-        //else
-        /*if (LinkedList.getNodeInt(node) ==22){ //after recursively parsing variables, check to see if next node is Begin keyword
-              parsedTree.add(String.valueOf(LinkedList.getNodeInt(node)));
-              //begin the definitions,
-              node = LinkedList.NextNode(node); //if yes increase node val and begin
-              begin(node);
-          }
-          else {
-            errorMsg("Define keyword missing");
-        }*/
-
-        //}
-
-
-        // else {errorMsg("Missing new line or begin keyword");}
     }
 
     public void datatype(LinkedList.Node datanode){
