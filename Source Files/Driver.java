@@ -34,6 +34,7 @@ public class Driver {
 		//Calling the Parser
 		ParseLinkedList PLL = new ParseLinkedList(Parse.readFile());
 		PLL.beginParse();
+		//PLL.in.display();
 		
 		//Clearing the information currently stored in the statements.txt file
 		try {
@@ -69,6 +70,7 @@ public class Driver {
 	    			str += " " + PLL.parsedTree.get(i);
 	    		}
 	    	}
+	    	PW.append(str);
 	    	PW.close();
 	    }catch(IOException e){
 	    	System.out.println("Error opening output file.");

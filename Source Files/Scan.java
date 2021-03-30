@@ -22,7 +22,7 @@ import java.io.*;
 public class Scan {
 	private static final String[][] KEYWORDS = {{"function", "21"}, {"begin", "22"}, {"endfun", "23"}, {"constants", "24"}, {"variables", "25"}, {"define", "26"}, {"set", "27"},  {"type", "28"}, {"display", "29"}, {"input", "30"}, 
 						{"integer", "31"}, {"double", "32"}, {"boolean", "33"}, {"character", "34"}, {"true", "35"}, {"false", "36"}, {"if", "37"}, {"then", "38"}, {"endif", "39"}, {"elseif", "40"}, {"else", "41"}};
-	private static final String[][] SYMBOLS = {{"+", "1"}, {"-","2"}, {"*","3"}, {"/","4"}, {"=", "5"}, {"==","6"},  {"<","7"}, {">","8"}, {">=","9"}, {"<=","10"}, {"!","11"}, {"!=","12"}, {"(","13"}, {")", "14"}, {"<","15"},{">","16"}, 
+	private static final String[][] SYMBOLS = {{"+", "1"}, {"-","2"}, {"*","3"}, {"/","4"}, {"=", "5"}, {"==","6"},  {"<","7"}, {">","8"}, {">=","9"}, {"<=","10"}, {"!","11"}, {"!=","12"}, {"(","13"}, {")", "14"}, 
 						{"\"", "17"}, {"\'", "18"}, {".", "19"}, {",", "20"}};
 	private static String[] identifiers = new String[25]; //identifiers structure of [identifier_name][identifier_type]
 	private static int filled = 0;

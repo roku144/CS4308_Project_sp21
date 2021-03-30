@@ -1,6 +1,3 @@
-
-
-
 import java.util.ArrayList;
 //i am importing LinkedList ll containing everything
 
@@ -9,21 +6,23 @@ import java.util.ArrayList;
 //necessary conditions would be defined as: defining a IDENTIFIER
 
 
-public class ParseLinkedList extends LinkedList{
+public class ParseLinkedList {
 
-    private LinkedList in;
+    protected LinkedList in;
     protected ArrayList<String> parsedTree;
+
     
     ParseLinkedList (Object LL){
     	this.in = (LinkedList) LL;
-    	 parsedTree = new ArrayList<String>();
+    	parsedTree = new ArrayList<String>();
     }
     
     public void beginParse(){
 
+
         //import parkers linked list
         LinkedList.Node itNode = in.getHeadNode();//firstnode
-        
+
         if(LinkedList.getNodeInt(itNode) == 21) {
             parsedTree.add(String.valueOf(LinkedList.getNodeInt(itNode)));
             itNode = LinkedList.NextNode(itNode); //2ndnode
@@ -33,46 +32,85 @@ public class ParseLinkedList extends LinkedList{
                 //get int val of second node and chedck if it is == new line
                 itNode = LinkedList.NextNode(itNode);//3rdnode
                 //set first node to second node
-                if(LinkedList.getNodeInt(itNode) == 24){
+                if(LinkedList.getNodeInt(itNode) == 24){    //if next keyword is CONST
                     parsedTree.add(String.valueOf(LinkedList.getNodeInt(itNode)));
                     //if next node int == constant
                     itNode = LinkedList.NextNode(itNode); //4thnode
-                    if(LinkedList.getNodeInt(itNode) == 9000){
+                    if(LinkedList.getNodeInt(itNode) == 9000){  //after const we have a blank line
                         parsedTree.add(String.valueOf(LinkedList.getNodeInt(itNode)));
-                        //see if 4th node is blank
+                        //see if 4th node is blank t
                         itNode =LinkedList.NextNode(itNode); //5th node
-                        if(LinkedList.getNodeInt(itNode) == 25){
+                            //check if next node is DEFINE, if not, move to variables
+                        if(LinkedList.getNodeInt(itNode) == 25){ // if next keyword is VARI then no CONST are defined
                             parsedTree.add(String.valueOf(LinkedList.getNodeInt(itNode)));
                             //see if 5th node is keyword variable
                             //we can hard code the first 5 nodes bc they follow consistent structure
                             itNode = LinkedList.NextNode(itNode); //6thnode
-                                 defineVari(itNode);
-
-                                 // definition functions
-
-
-
-                        } else{ errorMsg("must have variables keyword following constants keyword");}
+                                // definition functions
+                              if(LinkedList.getNodeInt(itNode) == 9000) { //if blank after DEFINE
+                                parsedTree.add(String.valueOf(LinkedList.getNodeInt(itNode)));
+                                itNode = LinkedList.NextNode(itNode);
+                                //check if define is preceeded by a blank.
+                                if (LinkedList.getNodeInt(itNode) == 26) {
+                                    //if word = define
+                                    parsedTree.add(String.valueOf(LinkedList.getNodeInt(itNode)));
+                                    itNode = LinkedList.NextNode(itNode);
+                                    //begin the definitions,
+                                    defineVari(itNode);
+                                }
+                            }else {blankErr();}
+                        }   //after blank line we can have DEFINE,VARI,orBEGIN
+                        else if(LinkedList.getNodeInt(itNode) ==26){ //if after CONST we have DEFINE, define the constants
+                            parsedTree.add(String.valueOf(LinkedList.getNodeInt(itNode)));
+                            //see if 5th node is keyword variable
+                            //we can hard code the first 5 nodes bc they follow consistent structure
+                            itNode = LinkedList.NextNode(itNode); //6thnode
+                            //next node shld be 9000, maybe check here or check in the define method
+                            defineVari(itNode);
+                        }
+                        else if(LinkedList.getNodeInt(itNode) ==22){ //After CONST we dont need to define or need variables, but we need begin(22)
+                            parsedTree.add(String.valueOf(LinkedList.getNodeInt(itNode)));
+                            //begin the definitions,
+                            itNode = LinkedList.NextNode(itNode); //if yes increase node val and begin
+                            begin(itNode);
+                        } //after funct we can have const var or begin (BEGIN COMPLETED)//if after const, we have define keyword
+                        else{ errorMsg("must have define, variable, or begin keyword following constants keyword");}
                     }
                     else {blankErr();}
-
                 }
-
-                else{ errorMsg("must have constant following function keyword");} //after blank and funct must have const
+                else if(LinkedList.getNodeInt(itNode) ==25){ //After function, we dont NEED CONST, but we can have VARI
+                    //figure out what to do if we have VARi w/ no CONST
+                    parsedTree.add(String.valueOf(LinkedList.getNodeInt(itNode)));
+                    //see if 5th node is keyword variable
+                    //we can hard code the first 5 nodes bc they follow consistent structure
+                    itNode = LinkedList.NextNode(itNode); //6thnode
+                    // definition functions
+                    if(LinkedList.getNodeInt(itNode) == 9000) { //if blank after DEFINE
+                        parsedTree.add(String.valueOf(LinkedList.getNodeInt(itNode)));
+                        itNode = LinkedList.NextNode(itNode);
+                        //check if define is preceeded by a blank.
+                        if (LinkedList.getNodeInt(itNode) == 26) {
+                            //if word = define
+                            parsedTree.add(String.valueOf(LinkedList.getNodeInt(itNode)));
+                            itNode = LinkedList.NextNode(itNode);
+                            //begin the definitions,
+                            defineVari(itNode);
+                        }
+                    }else {blankErr();}
+                }
+                else if(LinkedList.getNodeInt(itNode) ==22){ //After Function, we dont NEED const or variables, but we need begin(22)
+                    parsedTree.add(String.valueOf(LinkedList.getNodeInt(itNode)));
+                    //begin the definitions,
+                    itNode = LinkedList.NextNode(itNode); //if yes increase node val and begin
+                    begin(itNode);
+                } //after funct we can have const var or begin (BEGIN COMPLETED)
+                else{ errorMsg("must have constant, variable, or begin following function keyword");} //after blank and funct must have proper key words
             }
             else{blankErr();} //blank must follow function
-
-
-
         }
-
         else{
             errorMsg("must begin program with function.");
         }
-
-
-
-
     }
 
         //no blanks :O?
@@ -91,16 +129,16 @@ public class ParseLinkedList extends LinkedList{
 
     public void defineVari(LinkedList.Node node) {
 
-
+        /*prolly get rid of this
         if(LinkedList.getNodeInt(node) == 9000) {
             parsedTree.add(String.valueOf(LinkedList.getNodeInt(node)));
             //begin the definitions,
             node = LinkedList.NextNode(node);
             //check if define is preceeded by a blank.
-          if (LinkedList.getNodeInt(node) == 26) {
+          if (LinkedList.getNodeInt(node) == 26) {`     //Dont need to check for DEFINE anymore
             //if word = define
             parsedTree.add(String.valueOf(LinkedList.getNodeInt(node)));
-            node =LinkedList.NextNode(node);
+            node =LinkedList.NextNode(node); till here*/
                 if(LinkedList.getNodeInt(node) == 42 ){
                         //||LinkedList.getNodeInt(node) == 43 ||LinkedList.getNodeInt(node) == 44) {
                     //followig define, we have an identifier, depending on if it is a string(42),
@@ -119,8 +157,9 @@ public class ParseLinkedList extends LinkedList{
                 }else{errorMsg("No identifier");}
 
 
-        }
-          else if (LinkedList.getNodeInt(node) ==22){ //after recursively parsing variables, check to see if next node is Begin keyword
+        //}
+          //else
+        /*if (LinkedList.getNodeInt(node) ==22){ //after recursively parsing variables, check to see if next node is Begin keyword
               parsedTree.add(String.valueOf(LinkedList.getNodeInt(node)));
               //begin the definitions,
               node = LinkedList.NextNode(node); //if yes increase node val and begin
@@ -128,12 +167,12 @@ public class ParseLinkedList extends LinkedList{
           }
           else {
             errorMsg("Define keyword missing");
-        }
+        }*/
 
-        }
+      //}
 
 
-        else {errorMsg("Missing new line or begin keyword");}
+     // else {errorMsg("Missing new line or begin keyword");}
     }
 
     public void datatype(LinkedList.Node datanode){
@@ -143,7 +182,17 @@ public class ParseLinkedList extends LinkedList{
             case 31: //integer datatype
                 parsedTree.add(String.valueOf(LinkedList.getNodeInt(datanode)));
                 datanode = LinkedList.NextNode(datanode);
-                defineVari(datanode); //recursively call the define variable method after increasing node value
+                if (LinkedList.getNodeInt(datanode)==9000) {
+                    actions(datanode); //recursively call the define variable method after increasing node value
+                }
+                else if (LinkedList.getNodeInt(datanode)==5){ //if you have eqOP, you are defining something after type, we can be firm with these options bc datatype() is only called in defining
+                    parsedTree.add(String.valueOf(LinkedList.getNodeInt(datanode)));
+                    datanode=LinkedList.NextNode(datanode);
+                    eqOP(datanode);
+                    //send the value to eqOp. if the value after is 9000
+                }
+                //Ok, so after finding the datatype, we can either leave it at that(variables) or have eqOP(5)
+
                 break; //iterate
 
             case 32: //double datatype
@@ -188,14 +237,49 @@ public class ParseLinkedList extends LinkedList{
 
         //receive node value (first runthru should be right after Begin)
 
-        if (LinkedList.getNodeInt(node) == 9000) {
+        if (LinkedList.getNodeInt(node) == 9000){
             parsedTree.add(String.valueOf(LinkedList.getNodeInt(node)));
             node = LinkedList.NextNode(node);
             switch (LinkedList.getNodeInt(node)) {
-                case 23:
-
+            	case 22:
+            		parsedTree.add(String.valueOf(LinkedList.getNodeInt(node)));
+                    node = LinkedList.NextNode(node);
+                    begin(node);
+            		break;
+            	case 23:
                     //endFUN catch
                     begin(node);
+                    break;
+                case 25:
+                    //if Variables keyword is sent to actions() use method from first function
+                    parsedTree.add(String.valueOf(LinkedList.getNodeInt(node)));
+                    node = LinkedList.NextNode(node);
+                    if (LinkedList.getNodeInt(node) == 9000){
+                    	parsedTree.add(String.valueOf(LinkedList.getNodeInt(node)));
+                        node = LinkedList.NextNode(node);
+                    	if(LinkedList.getNodeInt(node) ==26){ //if after VARI we have DEFINE, define
+                            parsedTree.add(String.valueOf(LinkedList.getNodeInt(node)));
+                            node = LinkedList.NextNode(node); //6thnode
+                            //next node shld be 9000, maybe check here or check in the define method
+                            defineVari(node);
+                        }
+                        else if(LinkedList.getNodeInt(node) ==22){ //After VARI we dont need to define or need variables, but we need begin(22)
+                            parsedTree.add(String.valueOf(LinkedList.getNodeInt(node)));
+                            //begin the definitions,
+                            node = LinkedList.NextNode(node); //if yes increase node val and begin
+                            begin(node);
+                        } //after  var we can have define or begin
+
+                        else {errorMsg("Invalid keyword following Variables");}
+
+                    } //After Variables, there should aways be a blank line
+                    else{blankErr();} //if no blank line
+                    break;
+                case 26:
+                    //set action
+                    parsedTree.add(String.valueOf(LinkedList.getNodeInt(node)));
+                    node = LinkedList.NextNode(node);
+                    defineVari(node);
                     break;
                 case 27:
                     //set action
@@ -203,6 +287,12 @@ public class ParseLinkedList extends LinkedList{
                     node = LinkedList.NextNode(node);
                     set(node);
                     break;
+                case 29:
+                    //Display action
+                    parsedTree.add(String.valueOf(LinkedList.getNodeInt(node)));
+                    node = LinkedList.NextNode(node);
+                    display(node);
+                    break; 
                 case 37:
                     //define if - then action
                     parsedTree.add(String.valueOf(LinkedList.getNodeInt(node)));
@@ -222,7 +312,7 @@ public class ParseLinkedList extends LinkedList{
                     parsedTree.add(String.valueOf(LinkedList.getNodeInt(node)));
                     node = LinkedList.NextNode(node);
                     elseIfStmt(node);
-                    
+                    break;
                 case 41:
                     //define ELSE
                    parsedTree.add(String.valueOf(LinkedList.getNodeInt(node)));
@@ -236,6 +326,16 @@ public class ParseLinkedList extends LinkedList{
         }
     }
 
+    private void display(LinkedList.Node node) {
+        if(LinkedList.getNodeInt(node) == 42){
+            //if there is variable identifier in CHAR format, add the literal string to tree
+            parsedTree.add(LinkedList.getNodeStr(node));
+            node = LinkedList.NextNode(node);
+            MathOP(node);
+        }
+        else{errorMsg("no reference variable");}
+
+    }
 
 
     public void set(LinkedList.Node node){
@@ -286,7 +386,10 @@ public class ParseLinkedList extends LinkedList{
                 subOP(node);
                 break;
             case 3: //MultOP
-
+                parsedTree.add(String.valueOf(LinkedList.getNodeInt(node)));//add the addOP token
+                node = LinkedList.NextNode(node);
+                multOP(node);
+         
                 break;
             case 4: //DivOP
 
@@ -301,7 +404,9 @@ public class ParseLinkedList extends LinkedList{
 
                 break;
             case 7: //LessThanOP
-
+                parsedTree.add(String.valueOf(LinkedList.getNodeInt(node)));
+                node = LinkedList.NextNode(node);
+                LThanOP(node);
                 break;
             case 8: //GreatThanOP
 
@@ -336,6 +441,49 @@ public class ParseLinkedList extends LinkedList{
         }
     }
 
+    private void LThanOP(LinkedList.Node node) {
+        switch (LinkedList.getNodeInt(node)) {
+
+            case 43: { //if adding a NumericalDatatype
+                parsedTree.add(LinkedList.getNodeStr(node)); //add literal value of int to ParseTree
+                node = LinkedList.NextNode(node);
+                //if you have numerical value, you have IDENTIFIER = Num,Value and the operation is completed, instead of IDENTIFIER = Num,Value MathOP (Num,Value||IDENTIFIER) // ig thats jus the syntax?
+                MathOP(node);
+                break;
+            }
+            case 42: { //if adding identifier
+
+                parsedTree.add(LinkedList.getNodeStr(node)); //add literal value of string to ParseTree
+                node = LinkedList.NextNode(node);
+                //so here i am implying that whenever you have an identifier, you are going to have IDENTIFIER = IDENTIFIER MATHOP VALUE instead of simply IDENTIFIER = IDENTIFIER
+                MathOP(node);
+                break;
+            }
+        }
+    }
+
+    private void multOP(LinkedList.Node node) {
+        switch (LinkedList.getNodeInt(node)) {
+
+            case 43: { //if adding a NumericalDatatype
+                parsedTree.add(LinkedList.getNodeStr(node)); //add literal value of int to ParseTree
+                node = LinkedList.NextNode(node);
+                //if you have numerical value, you have IDENTIFIER = Num,Value and the operation is completed, instead of IDENTIFIER = Num,Value MathOP (Num,Value||IDENTIFIER) // ig thats jus the syntax?
+                MathOP(node);
+                break;
+            }
+            case 42: { //if adding identifier
+
+                parsedTree.add(LinkedList.getNodeStr(node)); //add literal value of string to ParseTree
+                node = LinkedList.NextNode(node);
+                //so here i am implying that whenever you have an identifier, you are going to have IDENTIFIER = IDENTIFIER MATHOP VALUE instead of simply IDENTIFIER = IDENTIFIER
+                MathOP(node);
+                break;
+            }
+            default: {errorMsg("improper operator");}
+        }
+    }
+
     private void closeIfs(LinkedList.Node node){
         if(LinkedList.getNodeInt(node)==14) {
             parsedTree.add(String.valueOf(LinkedList.getNodeInt(node)));
@@ -343,7 +491,7 @@ public class ParseLinkedList extends LinkedList{
             if(LinkedList.getNodeInt(node)==38){ //verify that IF contains THEN, THEN is followed by 9000
                 parsedTree.add(String.valueOf(LinkedList.getNodeInt(node)));
                 node = LinkedList.NextNode(node);
-                MathOP(node); //loop through mathOP to detrmine next operation
+                actions(node); //loop through mathOP to detrmine next operation
             } else if(LinkedList.getNodeInt(node)== 41){ //verify if ELSEIF contains else,  ELSE is followed by 9000
                 parsedTree.add(String.valueOf(LinkedList.getNodeInt(node)));
                 node = LinkedList.NextNode(node);
