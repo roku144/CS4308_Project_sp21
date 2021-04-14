@@ -1,6 +1,3 @@
-package com.company;
-
-import com.company.LinkedList.Node;
 import java.util.ArrayList;
 //i am importing LinkedList ll containing everything
 
