@@ -75,5 +75,20 @@ public class Driver {
 	    }catch(IOException e){
 	    	System.out.println("Error opening output file.");
 	    }
+		
+	    //Calling interpreter using the readStmt() function for entry
+	    Interpreter.readStmt();
+	    System.out.println("\nInterpretation Complete; Running source file...");
+	    
+	    //Compiling and running the completed interpreted file in the cmd environment
+	    try {
+		Process p;
+		p = Runtime.getRuntime().exec("cmd /c start cmd.exe /K \" javac ./projectOut.java && java projectOut\"");
+		
+		System.out.println("\nSource file finished execution. Closing compiler");			
+	   } catch (IOException e) {
+		System.out.println("Error running compiled file");
+		e.printStackTrace();
+	   }
 	}
 }
